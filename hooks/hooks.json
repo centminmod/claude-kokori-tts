@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-kokoro-server.sh",
+        "timeout": 10
+      }
+    ]
+  }
+}

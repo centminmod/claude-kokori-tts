@@ -1,0 +1,10 @@
+{
+  "name": "claude-kokoro-tts",
+  "description": "Text-to-speech for Claude Code using Kokoro-FastAPI with voice blending, streaming, and comprehensive format support",
+  "version": "1.0.0",
+  "author": {
+    "name": "George"
+  },
+  "keywords": ["tts", "text-to-speech", "kokoro", "audio", "voice", "accessibility"],
+  "hooks": "./hooks/hooks.json"
+}

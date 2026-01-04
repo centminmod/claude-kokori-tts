@@ -22,9 +22,33 @@ Text-to-speech integration for Claude Code using Kokoro-FastAPI with voice blend
 | Location | Purpose | Size |
 |----------|---------|------|
 | `~/.claude_tts/cache/` | Audio cache (speeds up repeated phrases) | Up to 1GB |
+| `~/.claude_tts/config.yml` | User configuration file (optional) | <1KB |
 | `~/.claude_tts/preload.json` | Custom preload messages (optional) | <1KB |
 
 These directories are created automatically on first use and persist across plugin updates.
+
+### Configuration File (NEW in v1.2.0)
+
+Create a `.claude_tts.yml` file in your project root or `~/.claude_tts/config.yml` to customize defaults:
+
+```yaml
+# Server configuration
+server:
+  url: http://localhost:8880
+
+# Audio settings
+audio:
+  voice: af_bella      # af_bella, af_sky, am_adam, bf_emma, etc.
+  format: wav          # wav, mp3, pcm, opus, flac
+  speed: 1.0           # 0.5 to 2.0
+
+# Mode flags
+notification: false    # Optimized for Claude Code hooks
+quiet: false           # Suppress output
+preload: true          # Preload messages at startup
+```
+
+**Precedence:** CLI args > project `.claude_tts.yml` > user `~/.claude_tts/config.yml` > hardcoded defaults
 
 ### Network Connections
 

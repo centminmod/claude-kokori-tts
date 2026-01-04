@@ -1,0 +1,57 @@
+# Claude TTS Configuration File
+# =============================
+# Place in project root (.claude_tts.yml) or user home (~/.claude_tts/config.yml)
+#
+# Precedence (highest to lowest):
+#   1. CLI arguments (always win)
+#   2. Project root .claude_tts.yml
+#   3. User home ~/.claude_tts/config.yml
+#   4. Hardcoded defaults in script
+#
+# All values below are set to match the hardcoded defaults.
+# Uncomment and modify values to customize behavior.
+
+# Server configuration
+server:
+  # Kokoro-FastAPI server URL
+  # Options: Any valid HTTP URL where Kokoro-FastAPI is running
+  # Example: http://remote-server:8880 for remote server
+  url: http://localhost:8880
+
+# Audio settings
+audio:
+  # Default voice to use
+  # Options: af_bella, af_sky, af_nicole, af_sarah, am_adam, am_michael, bf_emma, bf_isabella, bm_george, bm_lewis
+  # Supports blending: "af_bella+af_sky" (equal mix) or "af_bella(2)+af_sky(1)" (weighted 2:1)
+  voice: af_bella
+
+  # Audio output format
+  # Options: wav, mp3, pcm, opus, flac
+  # Note: wav is most compatible with pygame, pcm is fastest for notifications
+  format: wav
+
+  # Speech speed multiplier
+  # Range: 0.5 (slow) to 2.0 (fast)
+  speed: 1.0
+
+# Mode flags (all default to false)
+# Set to true to enable by default
+
+# Notification mode - optimized for Claude Code hooks (shorter timeouts, faster response)
+notification: false
+
+# Quiet mode - suppress non-error output
+quiet: false
+
+# Debug mode - enable debug logging with timing metrics
+debug: false
+
+# Streaming mode - enable streaming playback (requires PyAudio)
+stream: false
+
+# Background mode - play audio in background (non-blocking)
+background: false
+
+# Preload common messages at startup for instant playback
+# Set to false to disable preloading (faster startup, slower first playback)
+preload: true

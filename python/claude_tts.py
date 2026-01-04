@@ -3,7 +3,7 @@
 Claude Code + Kokoro-FastAPI TTS Integration (Enhanced)
 Advanced TTS with voice blending, streaming, and Claude Code hook support
 
-Version: 0.1.13
+Version: 0.1.14
 
 Prerequisites:
     1. Run Kokoro-FastAPI server: docker run -p 8880:8880 ghcr.io/remsky/kokoro-fastapi-cpu:latest
@@ -47,7 +47,7 @@ import click
 from dotenv import load_dotenv
 
 # Version constant
-__version__ = "0.1.13"
+__version__ = "0.1.14"
 
 # Configure environment and logging
 load_dotenv()
@@ -255,7 +255,32 @@ def handle_utility_operations(
     return None
 
 
-@click.command()
+def get_context_settings() -> dict:
+    """
+    Get Click context settings with config-based defaults.
+
+    Loads configuration from:
+    1. Project root .claude_tts.yml (highest priority)
+    2. User home ~/.claude_tts/config.yml (lower priority)
+
+    CLI arguments always override config file values.
+
+    Returns:
+        Dictionary with 'default_map' for Click context settings
+    """
+    try:
+        from modules.config.loader import ConfigurationLoader
+        config_loader = ConfigurationLoader()
+        default_map = config_loader.load_cli_defaults()
+        if default_map:
+            return {'default_map': default_map}
+    except Exception as e:
+        # Silently fall back to hardcoded defaults if config loading fails
+        logger.debug(f"Config file loading failed, using defaults: {e}")
+    return {}
+
+
+@click.command(context_settings=get_context_settings())
 @click.argument('text', required=False)
 @click.option('--voice', '-v', default='af_bella', help='Voice to use (supports blending: af_bella+af_sky)')
 @click.option('--speed', '-s', default=1.0, type=float, help='Speech speed (0.5-2.0)')

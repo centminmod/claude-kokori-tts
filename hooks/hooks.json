@@ -2,105 +2,140 @@
   "hooks": {
     "SessionStart": [
       {
-        "type": "command",
-        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-kokoro-server.sh",
-        "timeout": 10
-      },
-      {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py SessionStart",
-        "timeout": 15
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-kokoro-server.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py SessionStart",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
       {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py UserPromptSubmit",
-        "timeout": 15
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py UserPromptSubmit",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "Notification": [
       {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py Notification",
-        "timeout": 15
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py Notification",
+            "timeout": 15
+          }
+        ]
       }
     ],
-    "PreToolUse:Bash": [
+    "PreToolUse": [
       {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PreToolUse_Bash",
-        "timeout": 15
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PreToolUse_Bash",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PreToolUse_FileOp",
+            "timeout": 15
+          }
+        ]
       }
     ],
-    "PreToolUse:Write": [
+    "PostToolUse": [
       {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PreToolUse_FileOp",
-        "timeout": 15
-      }
-    ],
-    "PreToolUse:Edit": [
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PostToolUse_Bash",
+            "timeout": 15
+          }
+        ]
+      },
       {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PreToolUse_FileOp",
-        "timeout": 15
-      }
-    ],
-    "PostToolUse:Bash": [
-      {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PostToolUse_Bash",
-        "timeout": 15
-      }
-    ],
-    "PostToolUse:Write": [
-      {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PostToolUse_FileOp",
-        "timeout": 15
-      }
-    ],
-    "PostToolUse:Edit": [
-      {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PostToolUse_FileOp",
-        "timeout": 15
-      }
-    ],
-    "SubagentStop": [
-      {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py SubagentStop",
-        "timeout": 15
-      }
-    ],
-    "Stop": [
-      {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py Stop",
-        "timeout": 15
-      }
-    ],
-    "SessionEnd": [
-      {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py SessionEnd",
-        "timeout": 15
-      }
-    ],
-    "PreCompact": [
-      {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PreCompact",
-        "timeout": 15
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PostToolUse_FileOp",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "PermissionRequest": [
       {
-        "type": "command",
-        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PermissionRequest",
-        "timeout": 15
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PermissionRequest",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py SubagentStop",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py Stop",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py SessionEnd",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/scripts/unified_notifier.py PreCompact",
+            "timeout": 15
+          }
+        ]
       }
     ]
   }

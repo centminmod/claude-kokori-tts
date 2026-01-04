@@ -69,7 +69,7 @@ brew install uv
 ### 2. Start Kokoro Server
 
 ```bash
-docker run -d --name kokoro -p 8880:8880 \
+docker run -d --restart unless-stopped --name kokoro -p 8880:8880 \
   ghcr.io/remsky/kokoro-fastapi-cpu:latest
 ```
 

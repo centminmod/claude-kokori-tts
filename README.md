@@ -80,15 +80,29 @@ curl http://localhost:8880/health
 
 ## Installation
 
-### From Local Directory
+### Method 1: Development/Testing (Temporary)
+
+Load the plugin directly for the current session:
 
 ```bash
 claude --plugin-dir /path/to/claude-kokoro-tts
 ```
 
-### Enable in Settings
+This loads the plugin without installation - useful for testing.
 
-Add to `.claude/settings.json`:
+### Method 2: Interactive Installation (Recommended)
+
+Use the `/plugin` command within Claude Code:
+
+```text
+/plugin
+```
+
+Then browse, install, and enable the plugin interactively.
+
+### Method 3: Manual Settings (Advanced)
+
+Add to your `.claude/settings.json`:
 
 ```json
 {
@@ -97,6 +111,8 @@ Add to `.claude/settings.json`:
   }
 }
 ```
+
+**Note**: The `enabledPlugins` setting is always manual - it is not automatically set during installation. This method requires the plugin files to already be in Claude Code's plugin cache.
 
 ## Usage
 

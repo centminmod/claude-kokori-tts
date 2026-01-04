@@ -10,8 +10,8 @@ Text-to-speech integration for Claude Code using Kokoro-FastAPI with voice blend
 |-----------|----------|---------|
 | `.claude-plugin/` | `plugin.json` | Plugin manifest |
 | `commands/` | 8 markdown files | Slash command definitions |
-| `hooks/` | `hooks.json` | SessionStart server check |
-| `scripts/` | 3 bash scripts | Python wrapper scripts |
+| `hooks/` | `hooks.json` | Automatic TTS notifications on events |
+| `scripts/` | 4 scripts | Python wrapper + notification scripts |
 | `python/` | `claude_tts.py` + `modules/` | TTS Python code (~7,500 lines) |
 | `skills/` | `SKILL.md` | TTS notification skill |
 
@@ -155,6 +155,42 @@ On each Claude Code session start, the plugin:
 1. Checks if `uv` is installed
 2. Checks if Kokoro server is responding on port 8880
 3. Prints a warning if either is missing (does not block session)
+4. Announces "Session Started" via TTS
+
+## Automatic Notifications
+
+The plugin automatically announces Claude Code events via TTS:
+
+| Event | What's Announced |
+|-------|------------------|
+| SessionStart | "Session Started" |
+| UserPromptSubmit | "Processing: {prompt preview}" |
+| Notification | "Input Required: {message}" |
+| PreToolUse:Bash | "Wants to run a {command} command" |
+| PreToolUse:Write/Edit | "Wants to modify: {file}" |
+| PostToolUse:Bash | "Command succeeded" or "Command failed" |
+| PostToolUse:Write/Edit | "File saved" |
+| SubagentStop | "A subagent task has finished" |
+| Stop | "Finished working in {directory}" |
+| SessionEnd | "Session ended after {N} turns" |
+| PreCompact | "Compacting memory" |
+| PermissionRequest | "Permission needed for {tool}" |
+
+### Desktop Notifications (macOS)
+
+If `terminal-notifier` is installed, you also get desktop notifications:
+
+```bash
+brew install terminal-notifier
+```
+
+Desktop notifications are optional - TTS works without them.
+
+### Disable Automatic Notifications
+
+To use only manual slash commands without automatic TTS:
+1. Edit the plugin's `hooks/hooks.json`
+2. Remove the events you don't want
 
 ## Troubleshooting
 

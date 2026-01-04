@@ -5,6 +5,30 @@ All notable changes to the Claude Kokoro TTS Plugin will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-04
+
+### Added
+
+- **Automatic TTS notifications** on Claude Code events
+  - SessionStart, UserPromptSubmit, Notification
+  - PreToolUse and PostToolUse for Bash, Write, Edit
+  - SubagentStop, Stop, SessionEnd
+  - PreCompact, PermissionRequest
+- Desktop notifications via terminal-notifier (macOS, optional)
+- New `unified_notifier.py` script for hook event handling
+
+### Changed
+
+- Updated hooks.json with 14 hook events (was only SessionStart check)
+- Improved README with Automatic Notifications section
+- Scripts directory now contains 4 files (added unified_notifier.py)
+
+### Technical
+
+- TTS script path now resolved dynamically relative to plugin root
+- Desktop notifications fail silently if terminal-notifier not installed
+- All hook timeouts set to 15 seconds for TTS completion
+
 ## [1.0.0] - 2025-01-04
 
 ### Added

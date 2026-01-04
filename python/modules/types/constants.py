@@ -41,6 +41,7 @@ BYTES_PER_GB = 1024 * 1024 * 1024  # Bytes per gigabyte
 # Validation constants
 MIN_AUDIO_SIZE = 100  # Minimum audio size (bytes) for validation
 MIN_GENERATED_AUDIO_SIZE = 1000  # Minimum generated audio size (bytes)
+OPUS_MIN_TEXT_LENGTH = 40  # Minimum text length for OPUS format (shorter texts produce empty audio)
 TEMP_FILE_CLEANUP_AGE = 3600  # Age threshold for temp file cleanup (1 hour)
 
 # Performance constants

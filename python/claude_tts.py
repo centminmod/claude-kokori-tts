@@ -3,7 +3,7 @@
 Claude Code + Kokoro-FastAPI TTS Integration (Enhanced)
 Advanced TTS with voice blending, streaming, and Claude Code hook support
 
-Version: 0.1.15
+Version: 0.1.16
 
 Prerequisites:
     1. Run Kokoro-FastAPI server: docker run -p 8880:8880 ghcr.io/remsky/kokoro-fastapi-cpu:latest
@@ -47,7 +47,7 @@ import click
 from dotenv import load_dotenv
 
 # Version constant
-__version__ = "0.1.15"
+__version__ = "0.1.16"
 
 # Configure environment and logging
 load_dotenv()

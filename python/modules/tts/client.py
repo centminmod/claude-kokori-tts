@@ -12,7 +12,8 @@ from typing import Optional, List, Tuple, Dict, Any, TYPE_CHECKING
 
 from modules.types.constants import (
     MAX_TEXT_LENGTH, MIN_GENERATED_AUDIO_SIZE, MS_PER_SECOND,
-    SUPPORTED_FORMATS, VOICE_BLEND_SEPARATOR, VOICE_WEIGHT_PATTERN
+    SUPPORTED_FORMATS, VOICE_BLEND_SEPARATOR, VOICE_WEIGHT_PATTERN,
+    OPUS_MIN_TEXT_LENGTH
 )
 from modules.types.protocols import TTSClientProtocol, ConnectionPoolProtocol, CacheProtocol
 from modules.types.api_models import (
@@ -100,7 +101,13 @@ class TTSClient(TTSClientProtocol):
         
         if response_format not in SUPPORTED_FORMATS:
             raise ValueError(f"Unsupported format '{response_format}'. Supported: {list(SUPPORTED_FORMATS.keys())}. Use --format option to set valid format.")
-        
+
+        # OPUS format fallback for short text (server produces empty audio for short OPUS)
+        if response_format == "opus" and len(text) < OPUS_MIN_TEXT_LENGTH:
+            response_format = "wav"
+            if not self.quiet_mode:
+                self._print(f"⚠️ Text too short for OPUS ({len(text)} chars), using WAV instead")
+
         # Timing for debug mode
         start_time = time.time() if logger.isEnabledFor(logging.DEBUG) else None
         

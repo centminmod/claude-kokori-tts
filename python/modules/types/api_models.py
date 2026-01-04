@@ -33,7 +33,14 @@ class KokoroModel(BaseModel):
 class ModelsResponse(BaseModel):
     """Response from /v1/models endpoint"""
     data: List[KokoroModel] = Field(default_factory=list, description="Available models")
-    
+
+    model_config = ConfigDict(extra='allow')
+
+
+class VoicesListResponse(BaseModel):
+    """Response from /v1/audio/voices endpoint"""
+    voices: List[str] = Field(default_factory=list, description="List of available voice IDs")
+
     model_config = ConfigDict(extra='allow')
 
 
@@ -172,3 +179,8 @@ def parse_health_response(data: Dict[str, Any]) -> HealthResponse:
 def parse_error_response(data: Dict[str, Any]) -> ErrorResponse:
     """Parse and validate error response"""
     return ErrorResponse(**data)
+
+
+def parse_voices_list_response(data: Dict[str, Any]) -> VoicesListResponse:
+    """Parse and validate voices list endpoint response"""
+    return VoicesListResponse(**data)

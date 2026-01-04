@@ -5,6 +5,25 @@ All notable changes to the Claude Kokoro TTS Plugin will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-01-04
+
+### Fixed
+
+- **Voice discovery**: Fixed `--list-voices` returning empty list
+  - Changed from `/v1/models` to `/v1/audio/voices` endpoint
+  - Now correctly discovers all 67 available voices
+  - Parses voice IDs to extract language/gender metadata
+
+### Changed
+
+- Updated `.claude_tts.yml` with comprehensive voice list (67 voices across 11 languages)
+- Added `VoicesListResponse` Pydantic model for `/v1/audio/voices` endpoint
+- Added `_create_voice_info_from_id()` helper to parse voice metadata
+
+### Technical
+
+- Based on claude_tts.py v0.1.15
+
 ## [1.2.0] - 2026-01-04
 
 ### Added

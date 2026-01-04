@@ -16,8 +16,9 @@ from modules.types.constants import (
 )
 from modules.types.protocols import TTSClientProtocol, ConnectionPoolProtocol, CacheProtocol
 from modules.types.api_models import (
-    ModelsResponse, PhonemeResponse, VoiceInfo,
-    parse_models_response, parse_phoneme_response, parse_error_response
+    ModelsResponse, PhonemeResponse, VoiceInfo, VoicesListResponse,
+    parse_models_response, parse_phoneme_response, parse_error_response,
+    parse_voices_list_response
 )
 from modules.utils.text_processing import validate_text_input, validate_voice_input
 
@@ -298,33 +299,100 @@ class TTSClient(TTSClientProtocol):
     def discover_voices(self) -> Dict[str, VoiceInfo]:
         """
         Discover available voices from the server.
-        
+
+        Uses /v1/audio/voices endpoint which returns a list of voice IDs.
+
         Returns:
             Dictionary of voice ID to VoiceInfo objects
         """
         try:
-            response = self.conn_pool.get("/v1/models", timeout=10)
-            
+            response = self.conn_pool.get("/v1/audio/voices", timeout=10)
+
             if response.status_code == 200:
-                models_response = parse_models_response(response.json())
+                voices_response = parse_voices_list_response(response.json())
                 voices = {}
-                
-                for model in models_response.data:
-                    if model.id == "kokoro":
-                        for voice_info in model.voices:
-                            voices[voice_info.id] = voice_info
-                
+
+                for voice_id in voices_response.voices:
+                    # Create VoiceInfo from voice ID
+                    # Voice ID format: {language}{gender}_{name}
+                    # e.g., af_bella = American Female Bella
+                    voice_info = self._create_voice_info_from_id(voice_id)
+                    voices[voice_id] = voice_info
+
                 # Store as dict for backward compatibility with self.available_voices
                 self.available_voices = {vid: v.model_dump() for vid, v in voices.items()}
                 return voices
             else:
                 error_data = parse_error_response({"error": response.text, "status_code": response.status_code})
-                raise Exception(f"Models API returned status {response.status_code}: {error_data.error}")
-                
+                raise Exception(f"Voices API returned status {response.status_code}: {error_data.error}")
+
         except Exception as e:
             logger.exception("Voice discovery failed")
             # Return empty dict on failure, don't raise
             return {}
+
+    def _create_voice_info_from_id(self, voice_id: str) -> VoiceInfo:
+        """
+        Create VoiceInfo from a voice ID string.
+
+        Voice ID format: {language_prefix}{gender}_{name}
+        - af_ = American Female
+        - am_ = American Male
+        - bf_ = British Female
+        - bm_ = British Male
+        - ef_ = Spanish Female
+        - ff_ = French Female
+        - hf_ = Hindi Female
+        - if_ = Italian Female
+        - jf_ = Japanese Female
+        - pf_ = Portuguese Female
+        - zf_ = Chinese Female
+
+        Args:
+            voice_id: Voice identifier (e.g., 'af_bella')
+
+        Returns:
+            VoiceInfo object with parsed metadata
+        """
+        # Language/gender prefixes
+        prefix_map = {
+            'af': ('en-US', 'female', 'American'),
+            'am': ('en-US', 'male', 'American'),
+            'bf': ('en-GB', 'female', 'British'),
+            'bm': ('en-GB', 'male', 'British'),
+            'ef': ('es', 'female', 'Spanish'),
+            'em': ('es', 'male', 'Spanish'),
+            'ff': ('fr', 'female', 'French'),
+            'fm': ('fr', 'male', 'French'),
+            'hf': ('hi', 'female', 'Hindi'),
+            'hm': ('hi', 'male', 'Hindi'),
+            'if': ('it', 'female', 'Italian'),
+            'im': ('it', 'male', 'Italian'),
+            'jf': ('ja', 'female', 'Japanese'),
+            'jm': ('ja', 'male', 'Japanese'),
+            'pf': ('pt', 'female', 'Portuguese'),
+            'pm': ('pt', 'male', 'Portuguese'),
+            'zf': ('zh', 'female', 'Chinese'),
+            'zm': ('zh', 'male', 'Chinese'),
+        }
+
+        # Parse voice ID
+        prefix = voice_id[:2] if len(voice_id) >= 2 else ''
+        name_part = voice_id[3:] if len(voice_id) > 3 and voice_id[2] == '_' else voice_id
+
+        # Get language/gender info
+        language, gender, region = prefix_map.get(prefix, ('unknown', 'unknown', 'Unknown'))
+
+        # Create human-readable name
+        name = name_part.replace('_', ' ').title()
+
+        return VoiceInfo(
+            id=voice_id,
+            name=name,
+            language=language,
+            gender=gender,
+            description=f"{region} {gender} voice"
+        )
     
     def test_connection(self, timeout: float = 5.0) -> bool:
         """
